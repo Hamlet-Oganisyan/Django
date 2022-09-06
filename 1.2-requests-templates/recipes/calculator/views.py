@@ -1,3 +1,4 @@
+from http.client import HTTPResponse
 from django.shortcuts import render
 
 DATA = {
@@ -20,11 +21,35 @@ DATA = {
 }
 
 # Напишите ваш обработчик. Используйте DATA как источник данных
-# Результат - render(request, 'calculator/index.html', context)
-# В качестве контекста должен быть передан словарь с рецептом:
-# context = {
-#   'recipe': {
-#     'ингредиент1': количество1,
-#     'ингредиент2': количество2,
-#   }
-# }
+def omlet_view(request, servings= 'none'):
+    servings = int(request.GET.get("servings", 1))
+    omlet = {}
+    for k, v in DATA['omlet'].items():
+        omlet[k] = v * servings
+
+    context = {
+    'recipe' : omlet
+    }
+    return render(request, 'calculator/index.html', context)
+
+def pasta_view(request, servings= 'none'):
+    servings = int(request.GET.get("servings", 1))
+    pasta = {}
+    for k, v in DATA['pasta'].items():
+        pasta[k] = v * servings
+
+    context = {
+    'recipe' : pasta
+    }
+    return render(request, 'calculator/index.html', context)
+
+def buter_view(request, servings= 'none'):
+    servings = int(request.GET.get("servings", 1))
+    buter = {}
+    for k, v in DATA['buter'].items():
+        buter[k] = v * servings
+
+    context = {
+    'recipe' : buter
+    }
+    return render(request, 'calculator/index.html', context)
