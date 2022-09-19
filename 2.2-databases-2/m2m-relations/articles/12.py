@@ -14,7 +14,7 @@ class ScopeInlineFormset(BaseInlineFormSet):
         if count > 1:
             raise ValidationError('Основной раздел должен быть один!')
 
-        if count < 1:
+        if count == 0:
             raise ValidationError('Выберете один основной раздел!')
         return super().clean()
 
@@ -24,13 +24,11 @@ class ScopeInline(admin.TabularInline):
     formset = ScopeInlineFormset
     extra = 0
 
+
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    # list_display = ['id', 'title' ]
     inlines = [ScopeInline]
-
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    # list_display = ['id', 'name']
     pass
