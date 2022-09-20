@@ -20,7 +20,7 @@ class Article(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=25, verbose_name='Тематика статьи')
     article = models.ManyToManyField(Article, related_name='tags', through='Scope')
-    # related_name = 'tags',
+
     class Meta:
         verbose_name = 'Тэг'
         verbose_name_plural = 'Тэги'
@@ -37,3 +37,4 @@ class Scope(models.Model):
     class Meta:
         verbose_name = 'Раздел'
         verbose_name_plural = 'Разделы'
+        ordering = ['-is_main']
