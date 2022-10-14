@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from advertisements.models import Advertisement
 
@@ -27,7 +28,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Метод для создания"""
-
         # Простановка значения поля создатель по-умолчанию.
         # Текущий пользователь является создателем объявления
         # изменить или переопределить его через API нельзя.
@@ -40,6 +40,8 @@ class AdvertisementSerializer(serializers.ModelSerializer):
     def validate(self, data):
         """Метод для валидации. Вызывается при создании и обновлении."""
 
-        # TODO: добавьте требуемую валидацию
+        if Advertisement.objects.filter(creator=self.context['request'].user).filter(status='OPEN').count() >= 10 and \
+                not(self.context['request'].method == 'PATCH' and self.context['request'].data.get('status') == 'OPEN'):
+            raise ValidationError('У вас слишком много открытых обьявлений')
 
         return data
