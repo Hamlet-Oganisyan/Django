@@ -1,5 +1,6 @@
 import pytest
 from rest_framework.test import APIClient
+from django .urls import reverse
 from model_bakery import bakery
 from students.models import Course, Student
 
@@ -24,7 +25,7 @@ def student_factory():
 @pytest.mark.django_db
 def test_course(client):
     course = Course.create(name='java')
-    response = client.get('/api/v1/courses/')
+    response = client.get('/api/v1/courses/{course.id}/')
     assert response.status_code == 200
     data = response.json()
     assert data[0]['name'] == course.name
@@ -33,9 +34,9 @@ def test_course(client):
 # проверка получения списка курсов
 @pytest.mark.django_db
 def test_courses_get(client, courses_factory):
-    course = courses_factory(_quantity=15)
+    courses = courses_factory(_quantity=15)
     url = '/api/v1/courses/'
-    response = client.get(url, data={'id':f'{course[0].id}'})
+    response = client.get(url)
     url = reverse('courses-list')
     response = client.get(url)
     assert response.status_code == 200
@@ -91,3 +92,4 @@ def test_update_course(client):
 def test_delete_course(client):
     course = Course.objects.create(id=1, name='C+')  # создаем курс
     response = client.delete(f'/api/v1/courses/{course.id}/')  # Удаляем курс
+    assert response.status_code == 204
